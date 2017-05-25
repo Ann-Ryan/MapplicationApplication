@@ -14,6 +14,7 @@ buildscript {
 
 allprojects {
     buildDir = "C:/tmp/${rootProject.name}/${project.name}"
+    //The line above was manually added
     repositories {
         jcenter()
     }
@@ -21,4 +22,5 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+    //This may have been manually added too
 }

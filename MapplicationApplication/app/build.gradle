@@ -11,12 +11,17 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        //The line above was manually added
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -26,4 +31,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services:10.2.6'
     compile 'com.android.support:multidex:1.0.1'
+    //The line above was manually added
 }
+
+

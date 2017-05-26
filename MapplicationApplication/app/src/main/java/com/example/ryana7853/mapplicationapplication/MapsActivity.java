@@ -1,7 +1,13 @@
 package com.example.ryana7853.mapplicationapplication;
 
+import android.*;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,8 +45,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+       // LatLng sydney = new LatLng(-34, 151);
+        LatLng balboa = new LatLng(32.7,-117.1);
+        mMap.addMarker(new MarkerOptions().position(balboa).title("Born here!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(balboa));
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            Log.d("MyMap", "Failed permission check 1");
+            Log.d("MyMap", Integer.toString(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            Log.d("MyMap", "Failed permission check 2");
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+        }
+
+        mMap.setMyLocationEnabled(true);
+    }
+
+    public void switchView(View view){
+        if(mMap.getMapType() != GoogleMap.MAP_TYPE_SATELLITE) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+           // layout/activity_maps.xml:15 = "Normal View";
+
+        }
+        else if(mMap.getMapType() != GoogleMap.MAP_TYPE_NORMAL){
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
+
     }
 }

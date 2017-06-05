@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -26,6 +27,11 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -92,6 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void getLocation(View view) {
+        if(canGetLocation == false){
         try {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -129,6 +136,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } catch (Exception e) {
             Log.d("MyMap", "I caught an execption in my getLocation method");
+        }
+        canGetLocation = true;
+        }
+        else{
+            locationManager.removeUpdates(locationListenerGPS);
+            locationManager.removeUpdates(locationListenerNetwork);
+            canGetLocation = false;
         }
     }
 
@@ -271,6 +285,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.animateCamera(update);
             }
         }
+    }
+
+   // public List<Circle> getCircleList(){
+    //    List<Circle> circles = new List<Circle>(){};
+    //    return circles;
+    //}
+
+    public void clearMarkers(View view){
+        // ! !!This only clears the map, I need to make a list of circles and remove the circles in the list one-by-one from the map, as well as clear the circles from the list.
+        mMap.clear();
     }
 
     public void locSearch(View view){

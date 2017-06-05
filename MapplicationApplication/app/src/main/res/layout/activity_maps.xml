@@ -30,10 +30,12 @@
             android:id="@+id/button3"
             android:onClick="locSearch" />
 
-        <EditText
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText" />
+            android:text="Clear"
+            android:id="@+id/button4"
+            android:onClick="clearMarkers" />
 
     </LinearLayout>
 
@@ -43,7 +45,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="384dp"
-        android:layout_height="419dp"
+        android:layout_height="462dp"
         tools:context="com.example.ryana7853.mapplicationapplication.MapsActivity" />
 
 

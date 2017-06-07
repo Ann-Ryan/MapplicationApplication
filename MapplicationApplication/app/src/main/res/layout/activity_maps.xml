@@ -6,18 +6,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="75dp"
+        android:weightSum="1">
 
         <!--//Put buttons here-->
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="71dp"
             android:layout_height="wrap_content"
             android:text="Switch View"
             android:id="@+id/button"
-            android:onClick="switchView" />
+            android:onClick="switchView"
+            android:layout_weight="0.41" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="102dp"
             android:layout_height="wrap_content"
             android:text="Get Location"
             android:id="@+id/button2"
@@ -39,13 +41,22 @@
 
     </LinearLayout>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Address Name"
+        android:ems="10"
+        android:id="@+id/editText_search"
+        android:layout_gravity="center_horizontal" />
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="384dp"
-        android:layout_height="462dp"
+        android:layout_height="443dp"
         tools:context="com.example.ryana7853.mapplicationapplication.MapsActivity" />
 
 

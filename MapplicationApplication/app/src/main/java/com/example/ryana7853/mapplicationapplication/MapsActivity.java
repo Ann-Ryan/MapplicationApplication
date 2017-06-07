@@ -4,6 +4,8 @@ import android.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -28,6 +30,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +49,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
     private Location myLocation;
     private static final long MY_LOC_ZOOM_FACTOR = 17;
-    private EditText editText;
+    private EditText searchText;
+    private ArrayList<Circle> circles;
 
 
     // private LocationListener locationListenerNetwork;
@@ -60,6 +65,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        circles = new ArrayList<Circle>();
+        searchText = (EditText)findViewById(R.id.editText_search);
     }
 
 
@@ -76,12 +83,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        // LatLng sydney = new LatLng(-34, 151);
+        // Adds a marker at my place of birth and moves the camera there.
         LatLng balboa = new LatLng(32.7, -117.1);
         mMap.addMarker(new MarkerOptions().position(balboa).title("Born here!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(balboa, MY_LOC_ZOOM_FACTOR));
 
+        /*
+        The following permission checks see if the map can even access location, either in a fine way or a coarse way.
+         */
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("MyMap", "Failed permission check 1");
             Log.d("MyMap", Integer.toString(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
@@ -91,12 +100,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
         }
 
-       // mMap.setMyLocationEnabled(true);
-
-        // does locationListenerNetwork go here?
-        //currentLocation = mMap.addMarker(new MarkerOptions().title("You are here"));
+       // mMap.setMyLocationEnabled(true); puts the blue tracker dot on the screen
+        //currentLocation = mMap.addMarker(new MarkerOptions().title("You are here")); was a previous attempt for stuff
     }
 
+    /*
+    This is the tracking method called by the 'get location' button
+     */
     public void getLocation(View view) {
         if(canGetLocation == false){
         try {
@@ -164,10 +174,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //log and toast that gps is enabled and working
             Log.d("MyMap", "GPS is working");
             Toast.makeText(getApplicationContext(), "Using the GPS", Toast.LENGTH_SHORT).show();
-            //drop a marker on map - create a method called dropMArker
+            //Drops a purple marker on the whole shebang
             dropMarker(LocationManager.GPS_PROVIDER, Color.MAGENTA);
             //remove the network location updates. Hint see locationManager for update removal method
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -281,24 +294,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, MY_LOC_ZOOM_FACTOR);
                 //drop actual marker on the map
                 //if using circles, reference Android Circle class
-                Circle circle = mMap.addCircle(new CircleOptions().center(userLocation).radius(2).strokeColor(color).fillColor(color));
+                circles.add(mMap.addCircle(new CircleOptions().center(userLocation).radius(2).strokeColor(color).fillColor(color)));
                 mMap.animateCamera(update);
             }
         }
     }
 
-   // public List<Circle> getCircleList(){
-    //    List<Circle> circles = new List<Circle>(){};
-    //    return circles;
-    //}
-
+    /*
+    Clears all marker dots one-by-one from the map, and clears the circles from the list.
+     */
     public void clearMarkers(View view){
-        // ! !!This only clears the map, I need to make a list of circles and remove the circles in the list one-by-one from the map, as well as clear the circles from the list.
-        mMap.clear();
+        for(Circle c : circles){
+           c.remove();
+        }
+        circles.clear();
     }
 
-    public void locSearch(View view){
-        //String locName = (editText).toString();
+    public void locSearch(View view) throws IOException {
+        Log.d("MyMap", "The locSearch method runs.");
+        String locName = searchText.getEditableText().toString();
+        StringBuffer stringBuffer = new StringBuffer();
+        try{
+            Geocoder geocoder = new Geocoder(getApplicationContext());
+            for (Address address : geocoder.getFromLocationName(locName, 3)){
+                stringBuffer.append(address.toString() + "\n");
+            }
+            Log.d("MyMap", stringBuffer.toString());
+        }
+        catch (Exception e){
+            Log.d("MyMap", "Something is wrong with the geocoder");
+        }
     }
 }
 

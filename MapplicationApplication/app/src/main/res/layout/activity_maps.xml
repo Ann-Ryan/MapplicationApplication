@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Get Location"
             android:id="@+id/button2"
-            android:onClick="getLocation" />
+            android:onClick="track" />
 
         <Button
             android:layout_width="wrap_content"

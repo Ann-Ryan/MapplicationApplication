@@ -338,14 +338,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng userLocation = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
         try{
             Geocoder geocoder = new Geocoder(getApplicationContext());
-            for (Address address : geocoder.getFromLocationName(locName, 3, userLocation.latitude - 0.07, userLocation.longitude - 0.07, userLocation.latitude  + 0.07, userLocation.longitude + 0.07)){
+            for (Address address : geocoder.getFromLocationName(locName, 10, userLocation.latitude - 0.07, userLocation.longitude - 0.07, userLocation.latitude  + 0.07, userLocation.longitude + 0.07)){
                 stringBuffer.append(address.getAddressLine(0) + "\n" +
                 address.getAddressLine(1) + "\n" +
                 address.getAddressLine(2) + "\n" +
                 address.getAddressLine(3) + "\n");
                 if(address.hasLatitude()&&address.hasLongitude()){
                     LatLng addressLocation = new LatLng(address.getLatitude(), address.getLongitude());
-                    circles.add(mMap.addCircle(new CircleOptions().center(addressLocation).radius(2).strokeColor(Color.GREEN).fillColor(Color.GREEN)));
+                    circles.add(mMap.addCircle(new CircleOptions().center(addressLocation).radius(10).strokeColor(Color.GREEN).fillColor(Color.GREEN)));
                 }
             }
             showMessage("Search Results:", stringBuffer.toString());
